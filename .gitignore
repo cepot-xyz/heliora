@@ -10,3 +10,4 @@ PERSONA.md
 opencode.json
 opencode.jsonc
 *.md
+!README.md
