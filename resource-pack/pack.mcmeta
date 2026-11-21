@@ -1,7 +1,7 @@
 {
   "pack": {
-    "pack_format": 48,
-    "supported_formats": [1, 999],
-    "description": "Heliora sidebar glyphs"
+    "description": "Heliora sidebar glyphs",
+    "min_format": [94, 1],
+    "max_format": [94, 1]
   }
 }
