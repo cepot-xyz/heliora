@@ -5,10 +5,12 @@ import logo from '../Assets/logo white 540p.svg'
 
 type Page = 'beranda' | 'toko' | 'kontak'
 
+const BASE_PATH = window.location.pathname.replace(/\/(?:toko|kontak)?\/?$/, '') || ''
+
 const PAGES: Record<Page, { path: string; title: string }> = {
-  beranda: { path: '/', title: 'Heliora | Beranda' },
-  toko: { path: '/toko', title: 'Heliora | Toko' },
-  kontak: { path: '/kontak', title: 'Heliora | Kontak' }
+  beranda: { path: `${BASE_PATH}/`, title: 'Heliora | Beranda' },
+  toko: { path: `${BASE_PATH}/toko`, title: 'Heliora | Toko' },
+  kontak: { path: `${BASE_PATH}/kontak`, title: 'Heliora | Kontak' }
 }
 
 const ACCENT = '#ffffff'
