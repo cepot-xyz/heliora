@@ -27,18 +27,22 @@ export interface CardNavItem {
   bgColor?: string;
   textColor?: string;
   links?: CardNavLink[];
+  onClick?: (event: ReactMouseEvent<HTMLElement>) => void;
+  active?: boolean;
 }
 
 export interface CardNavCta {
-  label: string;
+  label: ReactNode;
   href?: string;
   onClick?: (event: ReactMouseEvent<HTMLElement>) => void;
+  keepMenuOpen?: boolean;
 }
 
 export interface CardNavProps {
   logo?: string | ReactNode;
   logoAlt?: string;
   logoHref?: string;
+  onLogoClick?: (event: ReactMouseEvent<HTMLElement>) => void;
   items?: CardNavItem[];
   cta?: CardNavCta;
   theme?: 'dark' | 'light';
@@ -139,7 +143,7 @@ const CONTENT =
   'invisible absolute inset-x-0 top-[var(--cn-bar)] box-border flex flex-col gap-[var(--cn-gap)] px-[var(--cn-inset)] pb-[var(--cn-inset)] [perspective:900px] group-data-[shown]/cn:visible';
 const CARDS = 'flex gap-[var(--cn-gap)] group-data-[narrow]/cn:flex-col';
 const CARD =
-  'group/card relative box-border flex min-h-[var(--cn-card)] min-w-0 flex-[1_1_0] origin-top flex-col gap-[18px] rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] px-[16px] pb-[14px] pt-[16px] [background:var(--cn-tile)] [box-shadow:var(--cn-tile-rim)] text-[var(--cn-text)] will-change-[transform,opacity] data-[tinted]:[box-shadow:inset_0_1px_0_rgba(255,255,255,0.16),0_4px_10px_-4px_rgba(0,0,0,0.45)] group-data-[narrow]/cn:min-h-0 group-data-[narrow]/cn:flex-none group-data-[narrow]/cn:gap-[10px] group-data-[narrow]/cn:px-[14px] group-data-[narrow]/cn:pb-[12px] group-data-[narrow]/cn:pt-[14px]';
+  'group/card relative box-border flex cursor-pointer border-0 text-left [font-family:inherit] min-h-[var(--cn-card)] min-w-0 flex-[1_1_0] origin-top flex-col gap-[18px] rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] px-[16px] pb-[14px] pt-[16px] [background:var(--cn-tile)] [box-shadow:var(--cn-tile-rim)] text-[var(--cn-text)] will-change-[transform,opacity] data-[tinted]:[box-shadow:inset_0_1px_0_rgba(255,255,255,0.16),0_4px_10px_-4px_rgba(0,0,0,0.45)] group-data-[narrow]/cn:min-h-0 group-data-[narrow]/cn:flex-none group-data-[narrow]/cn:gap-[10px] group-data-[narrow]/cn:px-[14px] group-data-[narrow]/cn:pb-[12px] group-data-[narrow]/cn:pt-[14px]';
 const CARD_HEAD = 'flex flex-col gap-[4px]';
 const LABEL = 'text-[17px] font-semibold tracking-[-0.015em]';
 const DESCRIPTION =
@@ -213,6 +217,7 @@ const CardNav = ({
   logo,
   logoAlt = 'Logo',
   logoHref = '#',
+  onLogoClick,
   items = DEFAULT_ITEMS,
   cta,
   theme = 'dark',
@@ -242,7 +247,7 @@ const CardNav = ({
   const panelRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLButtonElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
   const engineRef = useRef<{ wake: () => void; refresh: () => void } | null>(null);
   const leaveRef = useRef(0);
   const barRef = useRef<HTMLDivElement>(null);
@@ -309,7 +314,7 @@ const CardNav = ({
       const s = settingsRef.current;
       state.bar = parseFloat(getComputedStyle(panel).getPropertyValue('--cn-bar')) || 60;
       panel.style.height = `${state.bar + Math.max(0, state.p) * state.height}px`;
-      const cards = cardRefs.current.filter((card): card is HTMLDivElement => card !== null);
+      const cards = cardRefs.current.filter((card): card is HTMLElement => card !== null);
       const count = cards.length;
       const lag = count > 1 ? Math.min(s.stagger, 0.7 / (count - 1)) : 0;
       const span = 1 - lag * (count - 1);
@@ -496,7 +501,7 @@ const CardNav = ({
         tabIndex: wide && !open ? -1 : undefined,
         onClick: event => {
           target.onClick?.(event);
-          if (wide) setOpen(false);
+          if (wide && !target.keepMenuOpen) setOpen(false);
         }
       },
       target.label
@@ -522,7 +527,7 @@ const CardNav = ({
             data-icon-only={menuLabel ? undefined : ''}
             aria-expanded={open}
             aria-controls={contentId}
-            aria-label={menuLabel ? undefined : open ? 'Close menu' : 'Open menu'}
+            aria-label={menuLabel ? undefined : open ? 'Tutup menu' : 'Open menu'}
             onClick={() => setOpen(!open)}
           >
             <span className={BURGER} aria-hidden="true">
@@ -535,14 +540,14 @@ const CardNav = ({
                   Menu
                 </span>
                 <span className={WORD_CLOSE} aria-hidden={!open}>
-                  Close
+                  Tutup
                 </span>
               </span>
             )}
           </button>
 
           {logo && (
-            <LinkComponent href={logoHref} className={LOGO} aria-label={logoAlt}>
+            <LinkComponent href={logoHref} className={LOGO} aria-label={logoAlt} onClick={onLogoClick}>
               {typeof logo === 'string' ? <img src={logo} alt="" draggable={false} /> : logo}
             </LinkComponent>
           )}
@@ -552,47 +557,86 @@ const CardNav = ({
 
         <div ref={contentRef} id={contentId} className={CONTENT} aria-hidden={!open}>
           <div className={CARDS}>
-            {items.map((item, index) => (
-              <div
-                key={`${item.label}-${index}`}
-                ref={element => {
-                  cardRefs.current[index] = element;
-                }}
-                className={CARD}
-                data-tinted={item.bgColor ? '' : undefined}
-                style={item.bgColor ? { background: item.bgColor, color: item.textColor } : undefined}
-              >
-                <div className={CARD_HEAD}>
-                  <span className={LABEL}>{item.label}</span>
-                  {item.description && <p className={DESCRIPTION}>{item.description}</p>}
+            {items.map((item, index) => {
+              const cardStyle = item.bgColor ? { background: item.bgColor, color: item.textColor } : undefined;
+              const setCardRef = (element: HTMLElement | null) => {
+                cardRefs.current[index] = element;
+              };
+
+              const cardBody = (
+                <>
+                  <div className={CARD_HEAD}>
+                    <span className={LABEL}>{item.label}</span>
+                    {item.description && <p className={DESCRIPTION}>{item.description}</p>}
+                  </div>
+                  {item.onClick ? (
+                    <span className={LINK} aria-hidden="true">
+                      <span className={ARROW} aria-hidden="true">
+                        <HugeiconsIcon className={ARROW_OUT} icon={ArrowUpRight01Icon} size={14} strokeWidth={2} />
+                        <HugeiconsIcon className={ARROW_IN} icon={ArrowUpRight01Icon} size={14} strokeWidth={2} />
+                      </span>
+                      {item.links?.[0]?.label ?? 'Kunjungi'}
+                    </span>
+                  ) : (
+                    <ul className={LINKS}>
+                      {(item.links ?? []).map((link, linkIndex) => (
+                        <li key={`${link.label}-${linkIndex}`}>
+                          {anchor(
+                            link,
+                            {
+                              className: LINK,
+                              'aria-label': link.ariaLabel,
+                              tabIndex: open ? undefined : -1,
+                              onClick: event => {
+                                onLinkClick?.(link, item, event);
+                                setOpen(false);
+                              }
+                            },
+                            <>
+                              <span className={ARROW} aria-hidden="true">
+                                <HugeiconsIcon className={ARROW_OUT} icon={ArrowUpRight01Icon} size={14} strokeWidth={2} />
+                                <HugeiconsIcon className={ARROW_IN} icon={ArrowUpRight01Icon} size={14} strokeWidth={2} />
+                              </span>
+                              {link.label}
+                            </>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              );
+
+              return item.onClick ? (
+                <button
+                  key={`${item.label}-${index}`}
+                  ref={setCardRef}
+                  type="button"
+                  className={CARD}
+                  data-tinted={item.bgColor ? '' : undefined}
+                  data-active={item.active ? '' : undefined}
+                  style={cardStyle}
+                  aria-current={item.active ? 'page' : undefined}
+                  onClick={event => {
+                    item.onClick?.(event);
+                    setOpen(false);
+                  }}
+                >
+                  {cardBody}
+                </button>
+              ) : (
+                <div
+                  key={`${item.label}-${index}`}
+                  ref={setCardRef}
+                  className={CARD}
+                  data-tinted={item.bgColor ? '' : undefined}
+                  data-active={item.active ? '' : undefined}
+                  style={cardStyle}
+                >
+                  {cardBody}
                 </div>
-                <ul className={LINKS}>
-                  {(item.links ?? []).map((link, linkIndex) => (
-                    <li key={`${link.label}-${linkIndex}`}>
-                      {anchor(
-                        link,
-                        {
-                          className: LINK,
-                          'aria-label': link.ariaLabel,
-                          tabIndex: open ? undefined : -1,
-                          onClick: event => {
-                            onLinkClick?.(link, item, event);
-                            setOpen(false);
-                          }
-                        },
-                        <>
-                          <span className={ARROW} aria-hidden="true">
-                            <HugeiconsIcon className={ARROW_OUT} icon={ArrowUpRight01Icon} size={14} strokeWidth={2} />
-                            <HugeiconsIcon className={ARROW_IN} icon={ArrowUpRight01Icon} size={14} strokeWidth={2} />
-                          </span>
-                          {link.label}
-                        </>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </div>
           {cta && narrow && (
             <div

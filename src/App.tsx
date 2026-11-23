@@ -1,35 +1,114 @@
-import CardNav from './components/CardNav'
+import { useEffect, useRef, useState } from 'react'
+import CardNav, { type CardNavItem } from './components/CardNav'
 import ShapeGrid from './components/ShapeGrid'
 import logo from '../Assets/logo white 540p.svg'
 
-const items = [
-  {
-    label: 'About',
-    description: 'The people and the story behind the studio.',
-    links: [
-      { label: 'Company', href: '/company' },
-      { label: 'Careers', href: '/careers' }
-    ]
-  },
-  {
-    label: 'Projects',
-    description: 'Selected work from the last few years.',
-    links: [
-      { label: 'Featured', href: '/featured' },
-      { label: 'Case studies', href: '/case-studies' }
-    ]
-  },
-  {
-    label: 'Contact',
-    description: 'Say hello, we read everything.',
-    links: [
-      { label: 'Email', href: 'mailto:hello@example.com' },
-      { label: 'LinkedIn', href: 'https://linkedin.com' }
-    ]
-  }
-]
+type Page = 'beranda' | 'toko' | 'kontak'
+
+const PAGES: Record<Page, { path: string; title: string }> = {
+  beranda: { path: '/', title: 'Heliora | Beranda' },
+  toko: { path: '/toko', title: 'Heliora | Toko' },
+  kontak: { path: '/kontak', title: 'Heliora | Kontak' }
+}
+
+const ACCENT = '#ffffff'
+
+const pageFromPath = (pathname: string): Page => {
+  const clean = pathname.replace(/\/+$/, '') || '/'
+  if (clean === '/toko' || clean.endsWith('/toko')) return 'toko'
+  if (clean === '/kontak' || clean.endsWith('/kontak')) return 'kontak'
+  return 'beranda'
+}
 
 export default function App() {
+  const [page, setPage] = useState<Page>(() => pageFromPath(window.location.pathname))
+  const [copied, setCopied] = useState(false)
+  const resetTimer = useRef<number | null>(null)
+
+  const navigate = (next: Page) => {
+    if (next === page) return
+    window.history.pushState({}, '', PAGES[next].path)
+    setPage(next)
+  }
+
+  const items: CardNavItem[] = [
+    {
+      label: 'Beranda',
+      description: 'Halaman Beranda',
+      active: page === 'beranda',
+      bgColor: page === 'beranda' ? ACCENT : undefined,
+      textColor: page === 'beranda' ? '#111111' : undefined,
+      onClick: () => navigate('beranda'),
+      links: [{ label: 'Kunjungi', href: '/' }]
+    },
+    {
+      label: 'Toko',
+      description: 'Jelajahi Toko Server Heliora',
+      active: page === 'toko',
+      bgColor: page === 'toko' ? ACCENT : undefined,
+      textColor: page === 'toko' ? '#111111' : undefined,
+      onClick: () => navigate('toko'),
+      links: [{ label: 'Kunjungi', href: '/toko' }]
+    },
+    {
+      label: 'Kontak',
+      description: 'Perlu menghubungi kami?',
+      active: page === 'kontak',
+      bgColor: page === 'kontak' ? ACCENT : undefined,
+      textColor: page === 'kontak' ? '#111111' : undefined,
+      onClick: () => navigate('kontak'),
+      links: [{ label: 'Kunjungi', href: '/kontak' }]
+    }
+  ]
+
+  const copyServerAddress = async () => {
+    const address = 'play.heliora.id'
+    let success = false
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(address)
+        success = true
+      }
+    } catch {
+      success = false
+    }
+
+    if (!success) {
+      const input = document.createElement('textarea')
+      input.value = address
+      input.setAttribute('readonly', '')
+      input.style.position = 'fixed'
+      input.style.opacity = '0'
+      document.body.appendChild(input)
+      input.select()
+      success = document.execCommand('copy')
+      input.remove()
+    }
+
+    if (!success) return
+
+    setCopied(true)
+    if (resetTimer.current !== null) window.clearTimeout(resetTimer.current)
+    resetTimer.current = window.setTimeout(() => setCopied(false), 2000)
+  }
+
+  useEffect(() => {
+    document.title = PAGES[page].title
+  }, [page])
+
+  useEffect(() => {
+    const handlePopState = () => setPage(pageFromPath(window.location.pathname))
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (resetTimer.current !== null) window.clearTimeout(resetTimer.current)
+    }
+  }, [])
+
   return (
     <>
       <ShapeGrid
@@ -65,8 +144,32 @@ export default function App() {
               </span>
             }
             logoAlt="Heliora Server"
+            logoHref={PAGES.beranda.path}
+            onLogoClick={event => {
+              event.preventDefault()
+              navigate('beranda')
+            }}
             items={items}
-            cta={{ label: 'Get started', href: '/signup' }}
+            cta={{
+              label: (
+                <span className="relative inline-flex w-[176px] items-center justify-center">
+                  <span
+                    aria-hidden={copied}
+                    className={`whitespace-nowrap transition-opacity duration-200 ease-out ${copied ? 'opacity-0' : 'opacity-100'}`}
+                  >
+                    Salin Alamat Server
+                  </span>
+                  <span
+                    aria-hidden={!copied}
+                    className={`absolute inset-0 flex items-center justify-center whitespace-nowrap transition-opacity duration-200 ease-out ${copied ? 'opacity-100' : 'opacity-0'}`}
+                  >
+                    Alamat Server Dicopy!
+                  </span>
+                </span>
+              ),
+              onClick: copyServerAddress,
+              keepMenuOpen: true
+            }}
             cardEffect="rise"
             openOn="click"
             surface="solid"
