@@ -7,6 +7,34 @@
 @custom-variant dark (&:is(.dark *));
 @plugin "daisyui";
 
-:root {
+:root,
+html,
+body,
+#root,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+input,
+select,
+textarea {
   font-family: 'Inter Variable', sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none;
 }
