@@ -25,8 +25,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: cp dist/index.html dist/404.html
-      - run: touch dist/.nojekyll
+      - run: |
+          cp dist/index.html dist/404.html
+          mkdir -p dist/toko dist/kontak
+          sed 's|src="./assets/|src="../assets/|g; s|href="./assets/|href="../assets/|g; s|href="./favicon.svg"|href="../favicon.svg"|g' dist/index.html > dist/toko/index.html
+          sed 's|src="./assets/|src="../assets/|g; s|href="./assets/|href="../assets/|g; s|href="./favicon.svg"|href="../favicon.svg"|g' dist/index.html > dist/kontak/index.html
+          touch dist/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

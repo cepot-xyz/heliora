@@ -5,12 +5,29 @@ import logo from '../Assets/logo white 540p.svg'
 
 type Page = 'beranda' | 'toko' | 'kontak'
 
+const SITE_URL = 'https://heliora.my.id'
+const OG_IMAGE = `${SITE_URL}/logo-540p.png`
 const BASE_PATH = window.location.pathname.replace(/\/(?:toko|kontak)?\/?$/, '') || ''
 
-const PAGES: Record<Page, { path: string; title: string }> = {
-  beranda: { path: `${BASE_PATH}/`, title: 'Heliora | Beranda' },
-  toko: { path: `${BASE_PATH}/toko`, title: 'Heliora | Toko' },
-  kontak: { path: `${BASE_PATH}/kontak`, title: 'Heliora | Kontak' }
+const PAGES: Record<Page, { path: string; canon: string; title: string; description: string }> = {
+  beranda: {
+    path: `${BASE_PATH}/`,
+    canon: '/',
+    title: 'Heliora | Beranda',
+    description: 'Heliora — server Minecraft Java dan Bedrock untuk komunitas. Salin alamat server dan mulai bermain.'
+  },
+  toko: {
+    path: `${BASE_PATH}/toko/`,
+    canon: '/toko/',
+    title: 'Heliora | Toko',
+    description: 'Jelajahi toko server Heliora untuk rank, crate, cosmetic, dan item.'
+  },
+  kontak: {
+    path: `${BASE_PATH}/kontak/`,
+    canon: '/kontak/',
+    title: 'Heliora | Kontak',
+    description: 'Hubungi tim Heliora untuk pertanyaan, kerja sama, dan dukungan server.'
+  }
 }
 
 const ACCENT = '#ffffff'
@@ -50,7 +67,7 @@ export default function App() {
       bgColor: page === 'toko' ? ACCENT : undefined,
       textColor: page === 'toko' ? '#111111' : undefined,
       onClick: () => navigate('toko'),
-      links: [{ label: 'Kunjungi', href: '/toko' }]
+      links: [{ label: 'Kunjungi', href: '/toko/' }]
     },
     {
       label: 'Kontak',
@@ -59,7 +76,7 @@ export default function App() {
       bgColor: page === 'kontak' ? ACCENT : undefined,
       textColor: page === 'kontak' ? '#111111' : undefined,
       onClick: () => navigate('kontak'),
-      links: [{ label: 'Kunjungi', href: '/kontak' }]
+      links: [{ label: 'Kunjungi', href: '/kontak/' }]
     }
   ]
 
@@ -96,7 +113,41 @@ export default function App() {
   }
 
   useEffect(() => {
-    document.title = PAGES[page].title
+    const data = PAGES[page]
+    const url = `${SITE_URL}${data.canon}`
+
+    document.title = data.title
+
+    const setMeta = (attr: 'name' | 'property', key: string, content: string) => {
+      let element = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`)
+      if (!element) {
+        element = document.createElement('meta')
+        element.setAttribute(attr, key)
+        document.head.appendChild(element)
+      }
+      element.content = content
+    }
+
+    setMeta('name', 'description', data.description)
+    setMeta('name', 'robots', 'index, follow, max-image-preview:large')
+    setMeta('property', 'og:type', 'website')
+    setMeta('property', 'og:site_name', 'Heliora')
+    setMeta('property', 'og:title', data.title)
+    setMeta('property', 'og:description', data.description)
+    setMeta('property', 'og:url', url)
+    setMeta('property', 'og:image', OG_IMAGE)
+    setMeta('name', 'twitter:card', 'summary_large_image')
+    setMeta('name', 'twitter:title', data.title)
+    setMeta('name', 'twitter:description', data.description)
+    setMeta('name', 'twitter:image', OG_IMAGE)
+
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    canonical.href = url
   }, [page])
 
   useEffect(() => {
