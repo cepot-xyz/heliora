@@ -81,7 +81,7 @@ export default function App() {
   ]
 
   const copyServerAddress = async () => {
-    const address = 'play.heliora.my.id'
+    const address = 'play.heliora.my.id:29652'
     let success = false
 
     try {
