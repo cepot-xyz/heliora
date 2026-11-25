@@ -26,6 +26,7 @@ export interface CardNavItem {
   description?: string;
   bgColor?: string;
   textColor?: string;
+  hoverColor?: string;
   links?: CardNavLink[];
   onClick?: (event: ReactMouseEvent<HTMLElement>) => void;
   active?: boolean;
@@ -123,11 +124,6 @@ const BAR =
   'relative z-[2] box-border grid h-[var(--cn-bar)] grid-cols-[1fr_auto_1fr] items-center px-[var(--cn-inset)] group-data-[narrow]/cn:grid-cols-[auto_1fr_auto]';
 const MENU =
   'inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] cursor-pointer items-center gap-[10px] justify-self-start rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 pl-[16px] pr-[14px] [background:none] [font-family:inherit] [font-size:inherit] font-medium text-[var(--cn-text)] outline-none transition-[background-color] duration-200 ease-[ease] hover:[background:var(--cn-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] data-[icon-only]:w-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] data-[icon-only]:justify-center data-[icon-only]:p-0 group-data-[narrow]/cn:col-[3] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-end';
-const BURGER = 'relative h-[12px] w-[18px]';
-const LINE_TOP =
-  'absolute left-0 top-[2.25px] h-[1.5px] w-full rounded-[2px] bg-current transition-[top,rotate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[open]/cn:top-[5.25px] group-data-[open]/cn:rotate-45 motion-reduce:transition-none';
-const LINE_BOTTOM =
-  'absolute left-0 top-[8.25px] h-[1.5px] w-full rounded-[2px] bg-current transition-[top,rotate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[open]/cn:top-[5.25px] group-data-[open]/cn:-rotate-45 motion-reduce:transition-none';
 const MENU_LABEL = 'relative inline-grid overflow-hidden';
 const WORD_OPEN =
   '[grid-area:1/1] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[open]/cn:-translate-y-[110%] motion-reduce:transition-none';
@@ -143,15 +139,17 @@ const CONTENT =
   'invisible absolute inset-x-0 top-[var(--cn-bar)] box-border flex flex-col gap-[var(--cn-gap)] px-[var(--cn-inset)] pb-[var(--cn-inset)] [perspective:900px] group-data-[shown]/cn:visible';
 const CARDS = 'flex gap-[var(--cn-gap)] group-data-[narrow]/cn:flex-col';
 const CARD =
-  'group/card relative box-border flex cursor-pointer border-0 text-left [font-family:inherit] min-h-[var(--cn-card)] min-w-0 flex-[1_1_0] origin-top flex-col gap-[18px] rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] px-[16px] pb-[14px] pt-[16px] [background:var(--cn-tile)] [box-shadow:var(--cn-tile-rim)] text-[var(--cn-text)] transition-[filter] duration-200 ease-[ease] hover:[filter:brightness(1.18)] data-[tinted]:hover:[filter:brightness(0.94)] will-change-[transform,opacity] data-[tinted]:[box-shadow:inset_0_1px_0_rgba(255,255,255,0.16),0_4px_10px_-4px_rgba(0,0,0,0.45)] group-data-[narrow]/cn:min-h-0 group-data-[narrow]/cn:flex-none group-data-[narrow]/cn:gap-[10px] group-data-[narrow]/cn:px-[14px] group-data-[narrow]/cn:pb-[12px] group-data-[narrow]/cn:pt-[14px]';
-const CARD_HEAD = 'flex flex-col gap-[4px]';
+  'group/card relative box-border flex cursor-pointer border-0 text-left [font-family:inherit] min-h-[var(--cn-card)] min-w-0 flex-[1_1_0] origin-top flex-col gap-[18px] rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] px-[16px] pb-[14px] pt-[16px] [background:var(--cn-tile)] [box-shadow:var(--cn-tile-rim)] text-[var(--cn-text)] will-change-[transform,opacity] data-[tinted]:[box-shadow:inset_0_1px_0_rgba(255,255,255,0.16),0_4px_10px_-4px_rgba(0,0,0,0.45)] group-data-[narrow]/cn:min-h-0 group-data-[narrow]/cn:flex-none group-data-[narrow]/cn:gap-[10px] group-data-[narrow]/cn:px-[14px] group-data-[narrow]/cn:pb-[12px] group-data-[narrow]/cn:pt-[14px]';
+const CARD_HEAD = 'relative z-10 flex flex-col gap-[4px]';
+const HOVER_TINT =
+  'pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,transparent_0%,var(--cn-hover-color,transparent)_100%)] opacity-0 transition-opacity duration-300 ease-[ease] group-hover/card:opacity-100 motion-reduce:transition-none';
 const LABEL = 'text-[26px] font-semibold tracking-[-0.015em]';
 const DESCRIPTION =
   'm-0 text-[20px] leading-[1.45] text-[var(--cn-muted)] group-data-[tinted]/card:text-inherit group-data-[tinted]/card:opacity-70';
 const LINKS =
-  'm-0 mt-auto flex list-none flex-col gap-[2px] p-0 group-data-[narrow]/cn:flex-row group-data-[narrow]/cn:flex-wrap group-data-[narrow]/cn:gap-x-[16px] group-data-[narrow]/cn:gap-y-[2px]';
+  'relative z-10 m-0 mt-auto flex list-none flex-col gap-[2px] p-0 group-data-[narrow]/cn:flex-row group-data-[narrow]/cn:flex-wrap group-data-[narrow]/cn:gap-x-[16px] group-data-[narrow]/cn:gap-y-[2px]';
 const LINK =
-  'group/link inline-flex cursor-pointer items-center gap-[8px] rounded-[6px] border-0 px-0 py-[3px] [background:none] [font-family:inherit] text-[21px] font-medium text-inherit no-underline opacity-[0.82] outline-none transition-opacity duration-200 ease-[ease] hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)]';
+  'group/link relative z-10 inline-flex cursor-pointer items-center gap-[8px] rounded-[6px] border-0 px-0 py-[3px] [background:none] [font-family:inherit] text-[21px] font-medium text-inherit no-underline opacity-[0.82] outline-none transition-opacity duration-200 ease-[ease] hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)]';
 const ARROW = 'relative inline-block h-[14px] w-[14px] flex-none overflow-hidden';
 const ARROW_OUT =
   'absolute inset-0 h-full w-full transition-transform duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:translate-x-[110%] group-hover/link:-translate-y-[110%] group-focus-visible/link:translate-x-[110%] group-focus-visible/link:-translate-y-[110%] motion-reduce:transition-none';
@@ -530,10 +528,6 @@ const CardNav = ({
             aria-label={menuLabel ? undefined : open ? 'Tutup menu' : 'Open menu'}
             onClick={() => setOpen(!open)}
           >
-            <span className={BURGER} aria-hidden="true">
-              <span className={LINE_TOP} />
-              <span className={LINE_BOTTOM} />
-            </span>
             {menuLabel && (
               <span className={MENU_LABEL}>
                 <span className={WORD_OPEN} aria-hidden={open}>
@@ -558,13 +552,17 @@ const CardNav = ({
         <div ref={contentRef} id={contentId} className={CONTENT} aria-hidden={!open}>
           <div className={CARDS}>
             {items.map((item, index) => {
-              const cardStyle = item.bgColor ? { background: item.bgColor, color: item.textColor } : undefined;
+              const cardStyle = {
+                ...(item.bgColor ? { background: item.bgColor, color: item.textColor } : {}),
+                ...(item.hoverColor ? { '--cn-hover-color': item.hoverColor } : {})
+              } as CSSProperties | undefined;
               const setCardRef = (element: HTMLElement | null) => {
                 cardRefs.current[index] = element;
               };
 
               const cardBody = (
                 <>
+                  {!item.active && <span className={HOVER_TINT} aria-hidden="true" />}
                   <div className={CARD_HEAD}>
                     <span className={LABEL}>{item.label}</span>
                     {item.description && <p className={DESCRIPTION}>{item.description}</p>}

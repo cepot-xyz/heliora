@@ -54,6 +54,7 @@ export default function App() {
     {
       label: 'Beranda',
       description: 'Halaman Beranda',
+      hoverColor: '#C3E956',
       active: page === 'beranda',
       bgColor: page === 'beranda' ? ACCENT : undefined,
       textColor: page === 'beranda' ? '#111111' : undefined,
@@ -63,6 +64,7 @@ export default function App() {
     {
       label: 'Toko',
       description: 'Jelajahi Toko Server Heliora',
+      hoverColor: '#FEC428',
       active: page === 'toko',
       bgColor: page === 'toko' ? ACCENT : undefined,
       textColor: page === 'toko' ? '#111111' : undefined,
@@ -72,6 +74,7 @@ export default function App() {
     {
       label: 'Kontak',
       description: 'Perlu menghubungi kami?',
+      hoverColor: '#5865F2',
       active: page === 'kontak',
       bgColor: page === 'kontak' ? ACCENT : undefined,
       textColor: page === 'kontak' ? '#111111' : undefined,
