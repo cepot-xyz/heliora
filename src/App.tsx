@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import CardNav, { type CardNavItem } from './components/CardNav'
 import ShapeGrid from './components/ShapeGrid'
-import logo from '../Assets/logo white 540p.svg'
+import logo from '../Assets/img/svg/logo white 540p.svg'
 
 type Page = 'beranda' | 'toko' | 'kontak'
 
@@ -193,7 +193,7 @@ export default function App() {
             logo={
               <span className="flex h-full items-center gap-2">
                 <img src={logo} alt="" className="h-full w-auto shrink-0" />
-                <span className="whitespace-nowrap text-[15px] font-semibold leading-none">Heliora Server</span>
+                <span className="whitespace-nowrap text-[22px] font-normal leading-none">Heliora Server</span>
               </span>
             }
             logoAlt="Heliora Server"
@@ -205,7 +205,7 @@ export default function App() {
             items={items}
             cta={{
               label: (
-                <span className="relative inline-flex w-[176px] items-center justify-center">
+                <span className="relative inline-flex w-[240px] items-center justify-center">
                   <span
                     aria-hidden={copied}
                     className={`whitespace-nowrap transition-opacity duration-200 ease-out ${copied ? 'opacity-0' : 'opacity-100'}`}
@@ -230,26 +230,38 @@ export default function App() {
             bounce={0.2}
             menuLabel
             speed={1}
-            cardHeight={176}
-            maxWidth={800}
+            cardHeight={230}
+            maxWidth={1100}
             className="pointer-events-auto relative! max-w-none!"
             intro={false}
           />
         </div>
         <div className="pt-[calc(68px_+_2vh)]" />
-        <section className="flex min-h-[calc(98vh_-_68px)] w-full items-center px-[3vh] pb-[6vh]">
-          <div className="grid w-full grid-cols-1 items-center gap-10 md:grid-cols-2">
-            <div className="flex justify-center">
-              <img src={logo} alt="Logo Heliora" className="h-[300px] w-auto max-w-full object-contain" />
+        {page === 'beranda' && (
+          <section className="flex min-h-[calc(98vh_-_68px)] w-full items-center px-[3vh] pb-[6vh]">
+            <div className="grid w-full grid-cols-1 items-center gap-10 md:grid-cols-2">
+              <div className="flex justify-center">
+                <img src={logo} alt="Logo Heliora" className="h-[300px] w-auto max-w-full object-contain" />
+              </div>
+              <div className="text-left">
+                <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">Heliora</h1>
+                <p className="mt-5 max-w-xl text-base leading-relaxed text-neutral-300 md:text-lg">
+                  Heliora adalah server Minecraft Java 1.21.11 untuk komunitas. Salin alamat server di atas, lalu bergabung.
+                </p>
+              </div>
             </div>
-            <div className="text-left">
-              <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">Heliora</h1>
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-neutral-300 md:text-lg">
-                Heliora adalah server Minecraft Java 1.21.11 untuk komunitas. Salin alamat server di atas, lalu bergabung.
-              </p>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
+        {page === 'toko' && (
+          <section className="flex min-h-[calc(98vh_-_68px)] w-full items-center justify-center px-[3vh]">
+            <p className="text-center text-xl text-neutral-200">Ini halaman toko</p>
+          </section>
+        )}
+        {page === 'kontak' && (
+          <section className="flex min-h-[calc(98vh_-_68px)] w-full items-center justify-center px-[3vh]">
+            <p className="text-center text-xl text-neutral-200">Ini halaman kontak</p>
+          </section>
+        )}
       </main>
     </>
   )

@@ -2,26 +2,72 @@
 @import "@heroui/styles";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
 @plugin "daisyui";
+
+@font-face {
+  font-family: 'Minecraft Reimagined Body';
+  src: url('../Assets/font/MinecraftReimagined/woff/MinecraftReimagined-Regular.woff') format('woff');
+  font-weight: 100 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minecraft Reimagined Body';
+  src: url('../Assets/font/MinecraftReimagined/woff/MinecraftReimagined-Italic.woff') format('woff');
+  font-weight: 100 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minecraft Reimagined Body';
+  src: url('../Assets/font/MinecraftReimagined/woff/MinecraftReimagined-Bold.woff') format('woff');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minecraft Reimagined Body';
+  src: url('../Assets/font/MinecraftReimagined/woff/MinecraftReimagined-Bold-Italic.woff') format('woff');
+  font-weight: 600 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minecraft Reimagined Heading';
+  src: url('../Assets/font/MinecraftReimagined/woff/MinecraftReimagined-Heading.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  font-size: 24px;
+}
 
 :root,
 html,
 body,
 #root,
+button,
+input,
+select,
+textarea {
+  font-family: 'Minecraft Reimagined Body', sans-serif;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
-h6,
-button,
-input,
-select,
-textarea {
-  font-family: 'Inter Variable', sans-serif;
+h6 {
+  font-family: 'Minecraft Reimagined Heading', sans-serif;
 }
 
 html,
@@ -37,4 +83,10 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 #root::-webkit-scrollbar {
   display: none;
+}
+
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
 }

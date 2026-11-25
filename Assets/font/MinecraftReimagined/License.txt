@@ -1,0 +1,32 @@
+FONT LICENSE MinecraftReimagined
+
+Copyright © 2026 cepottxyz. All rights reserved.
+
+1.  OWNERSHIP MinecraftReimagined is an original font asset created by
+    cepottxyz. It is also an asset developed for and associated with the
+    Heliora Server.
+
+2.  PERMITTED USE This font may be used free of charge for personal,
+    non-commercial, and other free-use purposes, provided that the terms
+    of this license are followed.
+
+3.  PROHIBITED USE Commercial use of this font is strictly prohibited
+    without prior written permission from the copyright holder. This
+    includes, but is not limited to, selling the font, distributing it
+    as part of a paid product, or using it in commercial projects or
+    services.
+
+4.  ATTRIBUTION Where reasonably possible, users should credit cepottxyz
+    as the creator of MinecraftReimagined.
+
+5.  PERMISSIONS AND INQUIRIES For permission requests or questions
+    regarding this license, please contact:
+
+Creator: cepottxyz
+Website: https://heliora.my.id
+Email: cepotmain@gmail.com
+
+6.  CREATION DATE Created on 24 November 2026.
+
+By downloading or using MinecraftReimagined, you acknowledge that you
+have read and agree to the terms of this license.
