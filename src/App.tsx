@@ -237,6 +237,19 @@ export default function App() {
           />
         </div>
         <div className="pt-[calc(68px_+_2vh)]" />
+        <section className="flex min-h-[calc(98vh_-_68px)] w-full items-center px-[3vh] pb-[6vh]">
+          <div className="grid w-full grid-cols-1 items-center gap-10 md:grid-cols-2">
+            <div className="flex justify-center">
+              <img src={logo} alt="Logo Heliora" className="h-[300px] w-auto max-w-full object-contain" />
+            </div>
+            <div className="text-left">
+              <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">Heliora</h1>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-neutral-300 md:text-lg">
+                Heliora adalah server Minecraft Java 1.21.11 untuk komunitas. Salin alamat server di atas, lalu bergabung.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </>
   )
